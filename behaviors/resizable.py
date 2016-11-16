@@ -1,6 +1,5 @@
 from __future__ import print_function
 from kivy.core.window import Window
-from kivy.uix.image import AsyncImage
 from kivy.uix.widget import Widget
 from kivy.properties import BooleanProperty, NumericProperty, StringProperty
 from kivy.metrics import cm
@@ -9,15 +8,17 @@ from kivy.graphics import InstructionGroup
 
 __all__ = ('ResizableBehavior', )
 
+
 class ResizableCursor(Widget):
     hidden = BooleanProperty(False)
     sides = ()
     source = StringProperty('')
-    def __init__(self, parent, resizable_sides='', **kwargs):
+
+    def __init__(self, parent, **kwargs):
         super(ResizableCursor, self).__init__(**kwargs)
         self.size_hint = (None, None)
         self.size = (cm(0.6), cm(0.6))
-        self.pos_hint = (None,None)
+        self.pos_hint = (None, None)
         self.pos = [-9999, -9999]
         self.source = 'behaviors/transparent.png'
         self.cnt = 0
@@ -40,27 +41,22 @@ class ResizableCursor(Widget):
             self.pos[1] = val[1] - self.height / 2
 
     def change_side(self, left, right, up, down):
-        changed = False
-        if self.hidden == False and self.sides != (left, right, up, down):
+        if not self.hidden and self.sides != (left, right, up, down):
             if left and up or right and down:
                 self.source = 'behaviors/resize2.png'
-                changed = True
             elif left and down or right and up:
                 self.source = 'behaviors/resize1.png'
-                changed = True
             elif left or right:
                 self.source = 'behaviors/resize_horizontal.png'
-                changed = True
             elif up or down:
                 self.source = 'behaviors/resize_vertical.png'
-                changed = True
             else:
-                if not any ((left, right, up, down)):
+                if not any((left, right, up, down)):
                     self.source = 'behaviors/transparent.png'
             self.sides = (left, right, up, down)
 
 
-class ResizableBehavior(object):
+class ResizableBehavior(Widget):
     hovering = BooleanProperty(False)
     hovering_resizable = BooleanProperty(False)
     rborder = NumericProperty(cm(0.5))
@@ -74,12 +70,13 @@ class ResizableBehavior(object):
     cursor = None
 
     def __init__(self, **kwargs):
-        super(ResizableBehavior, self).__init__( **kwargs)
-        Window.bind(mouse_pos = lambda obj, val: self.on_mouse_move(val))
+        super(ResizableBehavior, self).__init__(**kwargs)
+        Window.bind(mouse_pos=lambda obj, val: self.on_mouse_move(val))
+        self.oldpos = []
+        self.oldsize = []
         self.cursor = ResizableCursor(
             parent=self,
-            resizable_sides = self.resizable_sides,
-            size_hint = (None,None)
+            size_hint=(None, None)
         )
 
     def on_enter(self):
@@ -100,8 +97,8 @@ class ResizableBehavior(object):
         if self.hovering:
             if self.cursor:
                 self.cursor.on_mouse_move(pos)
-            if self.resizing == False:
-                if self.collide_point(pos[0], pos[1]) == False:
+            if not self.resizing:
+                if not self.collide_point(pos[0], pos[1]):
                     self.hovering = False
                     self.on_leave()
                     self.on_leave_resizable()
@@ -118,30 +115,30 @@ class ResizableBehavior(object):
         else:
             if self.collide_point(pos[0], pos[1]):
                 self.hovering = True
-                if self.resizing == False:
-                    chkr = self.check_resizable_side(pos)
+                if not self.resizing:
+                    self.check_resizable_side(pos)
                 self.on_enter()
 
     def check_resizable_side(self, mpos):
         if 'l' in self.resizable_sides:
             self.resizing_left = False
-            if mpos[0] > self.pos[0] and \
-                mpos[0] < self.pos[0] + self.rborder:
+            if mpos[0] > self.pos[0]:
+                if mpos[0] < self.pos[0] + self.rborder:
                     self.resizing_left = True
-        if 'r' in self.resizable_sides and self.resizing_left == False:
+        if 'r' in self.resizable_sides and not self.resizing_left:
             self.resizing_right = False
-            if mpos[0] < self.pos[0] + self.width and \
-                mpos[0] > self.pos[0] + self.width - self.rborder:
+            if mpos[0] < self.pos[0] + self.width:
+                if mpos[0] > self.pos[0] + self.width - self.rborder:
                     self.resizing_right = True
         if 'd' in self.resizable_sides:
             self.resizing_down = False
-            if mpos[1] > self.pos[1] and \
-                mpos[1] < self.pos[1] + self.rborder:
+            if mpos[1] > self.pos[1]:
+                if mpos[1] < self.pos[1] + self.rborder:
                     self.resizing_down = True
-        if 'u' in self.resizable_sides and self.resizing_down == False:
+        if 'u' in self.resizable_sides and not self.resizing_down:
             self.resizing_up = False
-            if mpos[1] < self.pos[1] + self.height and \
-                mpos[1] > self.pos[1] + self.height - self.rborder:
+            if mpos[1] < self.pos[1] + self.height:
+                if mpos[1] > self.pos[1] + self.height - self.rborder:
                     self.resizing_up = True
         if self.cursor:
             self.cursor.change_side(self.resizing_left, self.resizing_right, self.resizing_up, self.resizing_down)
@@ -152,7 +149,7 @@ class ResizableBehavior(object):
 
     def on_touch_down(self, touch):
         if self.hovering:
-            if any ([self.resizing_right, self.resizing_left, self.resizing_down, self.resizing_up]):
+            if any([self.resizing_right, self.resizing_left, self.resizing_down, self.resizing_up]):
                 self.oldpos = list(self.pos)
                 self.oldsize = list(self.size)
                 self.resizing = True
@@ -170,7 +167,7 @@ class ResizableBehavior(object):
                     self.width = touch.pos[0] - self.pos[0]
             elif self.resizing_left:
                 if touch.pos[0] < self.oldpos[0] + self.oldsize[0] - (self.rborder * 3):
-                    if self.dont_move == False:
+                    if not self.dont_move:
                         self.pos[0] = touch.pos[0]
                         self.width = self.oldpos[0] - touch.pos[0] + self.oldsize[0]
                     else:
@@ -179,7 +176,7 @@ class ResizableBehavior(object):
                             self.width = self.rborder * 3
             if self.resizing_down:
                 if touch.pos[1] < self.oldpos[1] + self.oldsize[1] - (self.rborder * 3):
-                    if self.dont_move == False:
+                    if not self.dont_move:
                         self.pos[1] = touch.pos[1]
                         self.height = self.oldpos[1] - touch.pos[1] + self.oldsize[1]
                     else:

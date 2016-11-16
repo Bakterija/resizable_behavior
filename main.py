@@ -1,5 +1,4 @@
 from __future__ import print_function
-from kivy.clock import Clock
 from kivy.app import App
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.floatlayout import FloatLayout
@@ -7,11 +6,9 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.metrics import cm
-from kivy.utils import platform
 from behaviors.resizable import ResizableBehavior
 from kivy.core.window import Window
 from kivy.graphics import *
-from kivy.properties import NumericProperty
 
 
 class ResizableLabel(ResizableBehavior, Label):
@@ -25,7 +22,7 @@ class ResizableLabel(ResizableBehavior, Label):
         self.bind(size=lambda obj, val: setattr(self.background, 'pos', self.pos))
         self.bind(size=self.on_size2)
 
-    def on_size2(self, obj, val):
+    def on_size2(self, _, val):
         self.text_size = val
         self.background.size = val
 
@@ -37,14 +34,14 @@ class ResizableButton(ResizableBehavior, Button):
 class ResizableSideBar(ResizableBehavior, BoxLayout):
     def __init__(self, **kwargs):
         super(ResizableSideBar, self).__init__(**kwargs)
+        self.background = Rectangle(pos=self.pos, size=self.size)
         self.resizable_sides = 'r'
 
-    def after_init(self, *args):
+    def after_init(self):
         for x in range(1, 10):
             lbl = Label(size_hint=(1, None), height=(cm(1)), text='X '+str(x))
             self.add_widget(lbl)
         self.bind(size=lambda obj, val: setattr(self.background, 'size', self.size))
-        self.background = Rectangle(pos=self.pos, size=self.size)
         blue = InstructionGroup()
         blue.add(Color(0.6, 0.6, 0.7, 1))
         blue.add(self.background)
@@ -70,8 +67,8 @@ class ResizableWidgetDemo(FloatLayout):
             text='RLabel',
             resizable_sides='d',
             dont_move=True,
-            size_hint =(1, None),
-            height = cm(1),
+            size_hint=(1, None),
+            height=cm(1),
         )
         r4sides = ResizableButton(
             text='4 sides resizable',
