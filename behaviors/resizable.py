@@ -7,18 +7,16 @@ from kivy.metrics import cm
 
 class ResizableCursor(AsyncImage):
     hidden = False
-    def __init__(self, parentt=None, resizable_sides='', **kwargs):
+    sides = ()
+    def __init__(self, resizable_sides='', **kwargs):
         super(ResizableCursor, self).__init__(**kwargs)
         self.size_hint = (None, None)
         self.size = (cm(0.6), cm(0.6))
         self.pos_hint = (None,None)
+        self.pos = (-9999, -9999)
         self.source = 'behaviors/transparent.png'
-        if parentt:
-            self.parentt = parentt
-            Window.bind(mouse_pos=self.on_mouse_move)
-            self.parentt.bind()
 
-    def on_mouse_move(self, obj, val):
+    def on_mouse_move(self, val):
         if self.hidden:
             if self.pos[0] != -9999:
                 self.pos[0] = -9999
@@ -28,7 +26,7 @@ class ResizableCursor(AsyncImage):
 
     def change_side(self, left, right, up, down):
         changed = False
-        if self.hidden == False:
+        if self.hidden == False and self.sides != (left, right, up, down):
             if left and up or right and down:
                 self.source = 'behaviors/resize2.png'
                 changed = True
@@ -41,12 +39,13 @@ class ResizableCursor(AsyncImage):
             elif up or down:
                 self.source = 'behaviors/resize_vertical.png'
                 changed = True
+            self.sides = (left, right, up, down)
 
 
 class ResizableBehavior(object):
     hovering = BooleanProperty(False)
     hovering_resizable = BooleanProperty(False)
-    rborder = NumericProperty(cm(0.1))
+    rborder = NumericProperty(cm(0.3))
     resizable_sides = StringProperty('')
     resizing_left = BooleanProperty(False)
     resizing_right = BooleanProperty(False)
@@ -61,11 +60,9 @@ class ResizableBehavior(object):
 
     def on_enter(self):
         self.cursor = ResizableCursor(
-            parentt = self,
             resizable_sides = self.resizable_sides,
             size_hint = (None,None),
             size = (cm(2), cm(2)),
-            pos = (-100, -100)
         )
         self.add_widget(self.cursor)
 
@@ -81,6 +78,8 @@ class ResizableBehavior(object):
 
     def on_mouse_move(self, pos):
         if self.hovering:
+            if self.cursor:
+                self.cursor.on_mouse_move(pos)
             if self.resizing == False:
                 if self.collide_point(pos[0], pos[1]) == False:
                     self.hovering = False
