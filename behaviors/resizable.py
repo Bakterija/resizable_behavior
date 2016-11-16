@@ -57,8 +57,6 @@ class ResizableCursor(Widget):
             else:
                 if not any ((left, right, up, down)):
                     self.source = 'behaviors/transparent.png'
-                    # self.hidden = True
-                    # self.on_mouse_move((-9999, -9999))
             self.sides = (left, right, up, down)
 
 
@@ -86,7 +84,6 @@ class ResizableBehavior(object):
 
     def on_enter(self):
         self.on_enter_resizable()
-        self.check_resizable_side
 
     def on_leave(self):
         self.cursor.hidden = True
