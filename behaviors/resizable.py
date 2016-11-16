@@ -24,7 +24,7 @@ class ResizableCursor(Widget):
 
         self.parent = parent
         instr = InstructionGroup()
-        self.rectangle = Rectangle(pos=self.pos, size=self.size, source='')
+        self.rectangle = Rectangle(pos=self.pos, size=self.size, source=self.source)
         instr.add(self.rectangle)
         self.parent.canvas.after.add(instr)
         self.bind(pos=lambda obj, val: setattr(self.rectangle, 'pos', val))
@@ -57,13 +57,15 @@ class ResizableCursor(Widget):
             else:
                 if not any ((left, right, up, down)):
                     self.source = 'behaviors/transparent.png'
+                    # self.hidden = True
+                    # self.on_mouse_move((-9999, -9999))
             self.sides = (left, right, up, down)
 
 
 class ResizableBehavior(object):
     hovering = BooleanProperty(False)
     hovering_resizable = BooleanProperty(False)
-    rborder = NumericProperty(cm(0.3))
+    rborder = NumericProperty(cm(0.5))
     resizable_sides = StringProperty('')
     resizing_left = BooleanProperty(False)
     resizing_right = BooleanProperty(False)
@@ -83,7 +85,8 @@ class ResizableBehavior(object):
         )
 
     def on_enter(self):
-        self.cursor.hidden = False
+        self.on_enter_resizable()
+        self.check_resizable_side
 
     def on_leave(self):
         self.cursor.hidden = True
