@@ -85,7 +85,6 @@ class ResizableCursor(Widget):
     defaults to False.
     '''
 
-
     sides = ()
     source = StringProperty('')
 
@@ -112,8 +111,6 @@ class ResizableCursor(Widget):
         if self.hidden:
             if self.pos[0] != -9999:
                 self.pos[0] = -9999
-                self.rectangle.pos = val
-                self.rectangle.pos = (-9999, -9999)
         else:
             self.pos[0] = val[0] - self.width / 2.0
             self.pos[1] = val[1] - self.height / 2.0
@@ -235,7 +232,6 @@ class ResizableBehavior(object):
     :attr:`dont_move` is a :class:`~kivy.properties.BooleanProperty` and
     defaults to False.
     '''
-
 
     def __init__(self, **kwargs):
         super(ResizableBehavior, self).__init__(**kwargs)
