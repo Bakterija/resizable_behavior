@@ -85,12 +85,6 @@ class ResizableCursor(Widget):
     defaults to False.
     '''
 
-    size = ListProperty([cm(0.6), cm(0.6)])
-    '''Size of the widget (width, height).
-
-    :attr:`size` is a :class:`~kivy.properties.ListProperty` and
-    defaults to 0.6 centimeters horizontal and 0.6 centimeters vertical.
-    '''
 
     sides = ()
     source = StringProperty('')
@@ -99,9 +93,10 @@ class ResizableCursor(Widget):
         super(ResizableCursor, self).__init__(**kwargs)
         self.size_hint = (None, None)
         self.pos_hint = (None, None)
-        self.pos = [-9999, -9999] # Should be enough to hide
         self.source = 'behaviors/transparent.png'
         self.parent = parent
+        self.size = (cm(0.6), cm(0.6))
+        self.pos = [-9999, -9999]
 
         # Makes an instruction group with a rectangle and loads an image inside it
         # Binds its properties to mouse positional changes and events triggered
@@ -117,9 +112,11 @@ class ResizableCursor(Widget):
         if self.hidden:
             if self.pos[0] != -9999:
                 self.pos[0] = -9999
+                self.rectangle.pos = val
+                self.rectangle.pos = (-9999, -9999)
         else:
-            self.pos[0] = val[0] - self.width / 2
-            self.pos[1] = val[1] - self.height / 2
+            self.pos[0] = val[0] - self.width / 2.0
+            self.pos[1] = val[1] - self.height / 2.0
 
     def change_side(self, left, right, up, down):
         # Changes images when ResizableBehavior.hovering_resizable state changes
@@ -246,7 +243,7 @@ class ResizableBehavior(object):
         self.cursor = None
         self.oldpos = []
         self.oldsize = []
-        self.cursor = ResizableCursor(parent=self)
+        self.cursor = ResizableCursor(parent=self, size_hint=(None, None), pos_hint=(None, None))
 
     def on_enter(self):
         self.on_enter_resizable()
