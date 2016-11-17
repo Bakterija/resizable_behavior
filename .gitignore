@@ -89,6 +89,7 @@ ENV/
 .ropeproject
 bin/
 .buildozer/
+.idea/
 *.apk
 *.pyc
 *.pyo

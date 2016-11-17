@@ -6,7 +6,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.metrics import cm
-from behaviors.resizable import ResizableBehavior
+from behaviors.resize import ResizableBehavior
 from kivy.core.window import Window
 from kivy.graphics import *
 
