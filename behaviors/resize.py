@@ -29,7 +29,7 @@ The following example adds resize behavior to a sidebar to make it resizable
         def __init__(self, **kwargs):
             super(ResizableSideBar, self).__init__(**kwargs)
             self.background = Rectangle(pos=self.pos, size=self.size)
-            self.resizable_sides = 'r'
+            self.resizable_right = True
             for x in range(1, 10):
                 lbl = Label(size_hint=(1, None), height=(cm(1)), text='Text '+str(x))
                 self.add_widget(lbl)
@@ -167,14 +167,32 @@ class ResizableBehavior(object):
     defaults to 0.5 centimeters.
     '''
 
-    resizable_sides = StringProperty('')
-    '''Sides which can be resized and will change mouse cursor on entering.
-    Insert the first letter of up, down, left, right to use.
-    For example, setting it to "r" will make it resizable the right side
-    and setting it to "rl" will make it resizable on the left and right sides.
+    resizable_left = BooleanProperty(False)
+    '''Enable / disable resizing on left side
 
-    :attr:`resizable_sides` is a :class:`~kivy.properties.StringProperty` and
-    defaults to "".
+    :attr:`resizable_left` is a :class:`~kivy.properties.BooleanProperty` and
+    defaults to False.
+    '''
+
+    resizable_right = BooleanProperty(False)
+    '''Enable / disable resizing on right side
+
+    :attr:`resizable_right` is a :class:`~kivy.properties.BooleanProperty` and
+    defaults to False.
+    '''
+
+    resizable_up = BooleanProperty(False)
+    '''Enable / disable resizing on upper side
+
+    :attr:`resizable_up` is a :class:`~kivy.properties.BooleanProperty` and
+    defaults to False.
+    '''
+
+    resizable_down = BooleanProperty(False)
+    '''Enable / disable resizing on lower side
+
+    :attr:`resizable_down` is a :class:`~kivy.properties.BooleanProperty` and
+    defaults to False.
     '''
 
     resizing_left = BooleanProperty(False)
@@ -282,22 +300,22 @@ class ResizableBehavior(object):
                 self.on_enter()
 
     def check_resizable_side(self, mpos):
-        if 'l' in self.resizable_sides:
+        if self.resizable_left:
             self.resizing_left = False
             if mpos[0] > self.pos[0]:
                 if mpos[0] < self.pos[0] + self.rborder:
                     self.resizing_left = True
-        if 'r' in self.resizable_sides and not self.resizing_left:
+        if self.resizable_right and not self.resizing_left:
             self.resizing_right = False
             if mpos[0] < self.pos[0] + self.width:
                 if mpos[0] > self.pos[0] + self.width - self.rborder:
                     self.resizing_right = True
-        if 'd' in self.resizable_sides:
+        if self.resizable_down:
             self.resizing_down = False
             if mpos[1] > self.pos[1]:
                 if mpos[1] < self.pos[1] + self.rborder:
                     self.resizing_down = True
-        if 'u' in self.resizable_sides and not self.resizing_down:
+        if self.resizable_up and not self.resizing_down:
             self.resizing_up = False
             if mpos[1] < self.pos[1] + self.height:
                 if mpos[1] > self.pos[1] + self.height - self.rborder:

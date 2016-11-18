@@ -35,7 +35,7 @@ class ResizableSideBar(ResizableBehavior, BoxLayout):
     def __init__(self, **kwargs):
         super(ResizableSideBar, self).__init__(**kwargs)
         self.background = Rectangle(pos=self.pos, size=self.size)
-        self.resizable_sides = 'r'
+        self.resizable_right = True
 
     def after_init(self):
         for x in range(1, 10):
@@ -57,7 +57,8 @@ class ResizableWidgetDemo(FloatLayout):
         self.sidebar.bind(size=lambda obj, val: setattr(self.stack1, 'width', self.width - val[0]))
         rbutton = ResizableButton(
             text='RButton',
-            resizable_sides='rd',
+            resizable_right = True,
+            resizable_down = True,
             pos=(300, 300),
             size_hint=(None, None),
             size=(cm(4), cm(4)),
@@ -65,14 +66,17 @@ class ResizableWidgetDemo(FloatLayout):
         )
         sidelabel = ResizableLabel(
             text='RLabel',
-            resizable_sides='d',
+            resizable_down = True,
             dont_move=True,
             size_hint=(1, None),
             height=cm(1),
         )
         r4sides = ResizableButton(
             text='4 sides resizable',
-            resizable_sides='rdlu',
+            resizable_right = True,
+            resizable_left = True,
+            resizable_up = True,
+            resizable_down = True,
             size_hint=(None, None),
             size=(cm(2), cm(2)),
             on_release=lambda x: print('ON_RELASE()')
