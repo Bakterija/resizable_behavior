@@ -100,7 +100,7 @@ class ModalViewModified(ModalView):
         self.open()
 
     def on_hidden(self, val):
-        # View has to be reopened to get it on top of everything else
+        # View has to be reopened to get it on top of other widgets
         timenow = time()
         if not val and timenow > self.last_opened + 1:
             self.dismiss()
