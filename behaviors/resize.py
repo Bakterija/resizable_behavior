@@ -530,6 +530,7 @@ class ResizableBehavior(object):
         self.resizing_up = False
         Window.show_cursor = True
         self.cursor.ungrab(self)
+        self.cursor.hidden = True
         return True
 
     def set_cursor_size(self, size):
