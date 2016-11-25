@@ -78,7 +78,11 @@ class ResizableWidgetDemo(FloatLayout):
             resizable_up = True,
             resizable_down = True,
             size_hint=(None, None),
-            size=(cm(2), cm(2)),
+            min_resizable_width=cm(3),
+            min_resizable_height=cm(3),
+            max_resizable_width=cm(10),
+            max_resizable_height=cm(10),
+            size=(cm(6), cm(6)),
             on_release=lambda x: print('ON_RELASE()')
         )
         self.add_widget(self.stack0)
