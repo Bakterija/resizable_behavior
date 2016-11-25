@@ -106,7 +106,6 @@ class ModalViewModified(ModalView):
         if not val and timenow > self.last_opened + 1:
             self.dismiss()
             self.open()
-            self.open()
             self.last_opened = timenow
 
     def on_touch_down(self, *args):
@@ -163,6 +162,7 @@ class ResizableCursor(Widget):
         self.bind(pos=lambda obj, val: setattr(self.rect, 'pos', val))
         self.bind(source=lambda obj, val: setattr(self.rect, 'source', val))
         self.bind(hidden=lambda obj, val: self.on_mouse_move(Window.mouse_pos))
+        Window.bind(mouse_pos=lambda obj, val: self.on_mouse_move(val))
 
     def on_size(self, obj, val):
         self.rect.size = val
@@ -386,11 +386,14 @@ class ResizableBehavior(object):
                 else:
                     self.on_leave_resizable()
 
-        if self.hovering_resizable or self.resizing:
-            if self.cursor:
-                self.cursor.on_mouse_move(pos)
-
     def check_resizable_side(self, x, y):
+        # Add small performance increase when distance is too high
+        # for possible hovering
+        if abs(self.x - x) > self.width:
+            return False
+        elif abs(self.y - y) > self.height:
+            return False
+
         if self.resizable_left:
             self.resizing_left = False
             if self.x <= x <= self.x + self.resizable_border:
