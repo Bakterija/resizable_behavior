@@ -20,7 +20,8 @@ class ResizableLabel(ResizableBehavior, Label):
         blue2.add(Color(0.5, 0.5, 0.5, 1))
         blue2.add(self.background)
         self.canvas.before.add(blue2)
-        self.bind(size=lambda obj, val: setattr(self.background, 'pos', self.pos))
+        self.bind(size=lambda obj, val: setattr(
+            self.background, 'pos', self.pos))
         self.bind(size=self.on_size2)
 
     def on_size2(self, _, val):
@@ -42,8 +43,10 @@ class ResizableSideBar(ResizableBehavior, BoxLayout):
         for x in range(1, 10):
             lbl = Label(size_hint=(1, None), height=(cm(1)), text='X '+str(x))
             self.add_widget(lbl)
-        self.bind(size=lambda obj, val: setattr(self.background, 'size', self.size))
-        self.bind(size=lambda obj, val: setattr(self.background, 'pos', self.pos))
+        self.bind(size=lambda obj, val: setattr(
+            self.background, 'size', self.size))
+        self.bind(size=lambda obj, val: setattr(
+            self.background, 'pos', self.pos))
         blue = InstructionGroup()
         blue.add(Color(0.6, 0.6, 0.7, 1))
         blue.add(self.background)
@@ -68,12 +71,15 @@ class ResizableWidgetDemo(FloatLayout):
     def __init__(self, **kwargs):
         super(ResizableWidgetDemo, self).__init__(**kwargs)
         self.stack0 = StackLayout(size_hint=(1, 1))
-        self.sidebar = ResizableSideBar(size_hint=(None, 1), width=cm(4.5), orientation='vertical')
-        self.stack1 = StackLayout(size_hint=(None, 1), width=self.width-cm(4.5))
+        self.sidebar = ResizableSideBar(
+            size_hint=(None, 1), width=cm(4.5), orientation='vertical')
+        self.stack1 = StackLayout(
+            size_hint=(None, 1), width=self.width-cm(4.5))
         self.stack2 = ResizableStackLayout(
             [0.7, 0.2, 0.2, 1], size_hint=(1, None),
             height=cm(5), resizable_down=True)
-        self.stack3 = ResizableStackLayout([0.2, 0.2, 0.7, 1], size_hint=(1, None))
+        self.stack3 = ResizableStackLayout(
+            [0.2, 0.2, 0.7, 1], size_hint=(1, None))
         rbutton = ResizableButton(
             text='down, left resizable button \n in resizable stacklayout',
             resizable_right = True,
@@ -112,10 +118,10 @@ class ResizableWidgetDemo(FloatLayout):
         self.stack2.add_widget(rbutton)
         self.add_widget(r4sides)
         self.sidebar.after_init()
-        self.sidebar.bind(size=lambda obj, val: setattr(self.stack1, 'width', self.width - val[0]))
-        self.stack2.bind(size=lambda obj, val: setattr(self.stack3, 'height', self.height - val[1]))
-
-
+        self.sidebar.bind(size=lambda obj, val: setattr(
+            self.stack1, 'width', self.width - val[0]))
+        self.stack2.bind(size=lambda obj, val: setattr(
+            self.stack3, 'height', self.height - val[1]))
 
 class ResizableWidgetDemoApp(App):
     def build(self):
