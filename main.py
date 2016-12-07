@@ -10,6 +10,7 @@ from behaviors.resize import ResizableBehavior
 from kivy.core.window import Window
 from kivy.properties import ListProperty
 from kivy.graphics import *
+from kivy.clock import Clock
 
 
 class ResizableLabel(ResizableBehavior, Label):
@@ -106,6 +107,7 @@ class ResizableWidgetDemo(FloatLayout):
             min_resizable_height=cm(3),
             max_resizable_width=cm(10),
             max_resizable_height=cm(10),
+            resizable_border_offset = 14,
             size=(cm(6), cm(6)),
             on_release=lambda x: print('ON_RELASE()')
         )
