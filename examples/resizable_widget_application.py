@@ -6,12 +6,14 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.metrics import cm
-from behaviors.resize import ResizableBehavior
 from kivy.core.window import Window
 from kivy.properties import ListProperty
 from kivy.graphics import *
 from kivy.clock import Clock
 
+from os import sys, path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from behaviors.resize import ResizableBehavior
 
 class ResizableLabel(ResizableBehavior, Label):
     def __init__(self, **kwargs):
