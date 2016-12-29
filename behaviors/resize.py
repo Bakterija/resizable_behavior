@@ -73,6 +73,9 @@ from kivy.uix.modalview import ModalView
 from kivy.logger import Logger
 from kivy.app import App
 from time import time
+import os
+path = os.path.split(os.path.realpath(__file__))[0]
+os.chdir(path)
 
 __all__ = ('ResizableBehavior', )
 
@@ -142,7 +145,6 @@ class ResizableCursor(Widget):
     'resize2.png',
     'resize_vertical.png',
     'resize1.png',
-    'transparent.png'
     ])
     '''Cursor icon paths,
 
@@ -152,7 +154,6 @@ class ResizableCursor(Widget):
     'resize2.png',
     'resize_vertical.png',
     'resize1.png',
-    'transparent.png'
     ]
     '''
 

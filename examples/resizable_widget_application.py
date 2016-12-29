@@ -10,7 +10,6 @@ from kivy.core.window import Window
 from kivy.properties import ListProperty
 from kivy.graphics import *
 from kivy.clock import Clock
-
 from os import sys, path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from behaviors.resize import ResizableBehavior
